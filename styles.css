@@ -1,0 +1,119 @@
+/* 
+    Sorce video: https://www.youtube.com/watch?v=fcnDBP3k3BE
+*/
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    /* placing everything in the center */
+    place-content: center;
+    gap: 2rem;
+    min-height: 100vh;
+    /* go to https://www.conic.style/ for more cool gradients */
+    background-image: conic-gradient(
+        at 125% 50%,
+        #b78cf7,
+        #ff7c94,
+        #ffcf0d,
+        #ff7c94,
+        #b78cf7
+    );
+    font-family: system-ui;
+}
+
+button {
+    cursor: pointer;
+    font-size: 2rem;
+    font-family: inherit;
+    font-weight: 700;
+    color: hsl(320, 40%, 40%);
+    background-color: hsl(349 100% 95%);
+    padding: 0.75em 1.25em;
+    border: 0;
+    border-radius: 1.25rem;
+}
+
+/* this is the button */
+.glow-effect {
+    --glow-line-color: aliceblue;
+    --glow-line-thickness: 2px;
+    --glow-blur-color: aliceblue;
+    --glow-blur-size: 10px;
+    --animation-speed: 1200ms;
+    /* This is used for calculations, don't change if you don't have too */
+    --container-offset: 100px;
+    position: relative;
+}
+
+/* the svg container */
+.glow-container {
+    /* This makes it so eventhough the svg is much bigger then the button, when its the svg is hovered, it doesn't set anything off too early */
+    pointer-events: none;
+    position: absolute;
+    inset: calc(var(--container-offset) / -2);
+    /* svg's have a base size, the width, and height make it the same size as the button its stored in */
+    width: calc(100% + var(--container-offset));
+    height: calc(100% + var(--container-offset));
+    /* this makes the svgs invisable at the start, they will come in again with the animation */
+    opacity: 0;
+}
+
+/* theses are the svgs */
+.glow-blur,
+.glow-line {
+    width: calc(100% - var(--container-offset));
+    height: calc(100% - var(--container-offset));
+    /* these have been updated for browsers, theres nothing wrong with them */
+    x: calc(var(--container-offset) / 2);
+    y: calc(var(--container-offset) / 2);
+    rx: 1.25rem;
+    /* fill is for svgs, rather than background-color or border */
+    fill: transparent;
+    /* stroke is border for svgs, effectively */
+    stroke: black;
+    stroke-width: 5px;
+    /* unitless numbers are defulted to px */
+    /* 20px line, 30px space */
+    stroke-dasharray: 20 30px;
+}
+
+.glow-line {
+    stroke: var(--glow-line-color);
+    stroke-width: var(--glow-line-thickness);
+}
+
+.glow-blur {
+    /* adding a glow effect to one of the svg */
+    filter: blur(5px);
+    stroke: var(--glow-blur-color);
+    stroke-width: var(--glow-blur-size);
+}
+
+.glow-effect:is(:hover, :focus) :is(.glow-line, .glow-blur) {
+    stroke-dashoffset: -80px;
+    transition: 
+        stroke-dashoffset 
+        var(--animation-speed)
+        ease-in;
+}
+
+.glow-effect:is(:hover, :focus) .glow-container {
+    animation: glow-visibility var(--animation-speed);
+}
+
+/* this is the animation to make the glowing rings appear and disappear */
+@keyframes glow-visibility {
+    0%, 100% { opacity: 0;}
+    25%, 75% { opacity: 1;}
+    /* 
+    You can optimise the animation and skip some steps
+    0% { opacity: 0;}
+    25% { opacity: 1;}
+    75% { opacity: 1;}
+    100% { opacity: 0;} 
+    */
+}
